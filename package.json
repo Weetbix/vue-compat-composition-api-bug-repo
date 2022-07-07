@@ -1,0 +1,29 @@
+{
+  "name": "vue-compat-composition-api-bug-repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:vue3": "vitest run",
+    "test:vue-compat": "vitest run --config vite.config.compat.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weetbix/vue-compat-composition-api-bug-repo.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Weetbix/vue-compat-composition-api-bug-repo/issues"
+  },
+  "homepage": "https://github.com/Weetbix/vue-compat-composition-api-bug-repo#readme",
+  "dependencies": {
+    "@testing-library/vue": "^6.6.0",
+    "@vue/compat": "^3.2.37",
+    "vitest": "^0.17.1",
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {
+    "jsdom": "^20.0.0"
+  }
+}
