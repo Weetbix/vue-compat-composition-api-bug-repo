@@ -1,8 +1,8 @@
 
 
 import {ref, onMounted, defineComponent} from 'vue';
-import {it} from 'vitest';
-import {render} from '@testing-library/vue';
+import {it, expect} from 'vitest';
+import {mount} from '@vue/test-utils';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -11,7 +11,10 @@ function sleep(ms) {
 const TestAsync = defineComponent({
     template: '<div><div>{{ mountText }}</div><div>{{ asyncText }}</div></div>',
 
-    setup() {
+    props: {
+        done: Function,
+    },
+    setup({ done }) {
         const mountText = ref();
         const asyncText = ref();
 
@@ -21,6 +24,7 @@ const TestAsync = defineComponent({
 
         sleep(0).then(() => {
             asyncText.value = 'async';
+            done?.();
         });
 
         return {
@@ -30,12 +34,37 @@ const TestAsync = defineComponent({
     },
 });
 
-it('should show onMount text', async () => {
-    const {findByText} = render(TestAsync);
-    await findByText('mounted');
-});
+it('should show onMount text', () => new Promise(done => {
+    const wrapper = mount(TestAsync);
+    wrapper.vm.$nextTick(() => {
+        expect(wrapper.html()).toMatch('mounted')
+        done();
+    });
+}));
 
 it('should show async text', async () => {
-    const {findByText} = render(TestAsync);
-    await findByText('async');
+    let renderedAsyncResolve;
+    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
+
+    const wrapper = mount(TestAsync, {
+        propsData: { done: renderedAsyncResolve }
+    });
+
+    await renderedAsync;
+    expect(wrapper.html()).toMatch('async');
 });
+
+it('should show async text with nextTick', () => new Promise(async (done) => {
+    let renderedAsyncResolve;
+    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
+
+    const wrapper = mount(TestAsync, {
+        propsData: { done: renderedAsyncResolve }
+    });
+
+    await renderedAsync;
+    wrapper.vm.$nextTick(() => {
+        expect(wrapper.html()).toMatch('async');
+        done();
+    });
+}));
