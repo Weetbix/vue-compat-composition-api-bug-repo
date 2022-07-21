@@ -2,7 +2,7 @@
 
 import {ref, onMounted, defineComponent} from 'vue';
 import {it, expect} from 'vitest';
-import {mount} from '@vue/test-utils';
+import {mount, flushPromises} from '@vue/test-utils';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -63,6 +63,22 @@ it('should show async text with nextTick', () => new Promise(async (done) => {
     });
 
     await renderedAsync;
+    wrapper.vm.$nextTick(() => {
+        expect(wrapper.html()).toMatch('async');
+        done();
+    });
+}));
+
+it('with flushPromises', () => new Promise(async (done) => {
+    let renderedAsyncResolve;
+    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
+
+    const wrapper = mount(TestAsync, {
+        propsData: { done: renderedAsyncResolve }
+    });
+
+    await renderedAsync;
+    await flushPromises();
     wrapper.vm.$nextTick(() => {
         expect(wrapper.html()).toMatch('async');
         done();
