@@ -2,7 +2,7 @@
 
 import {ref, onMounted, defineComponent, configureCompat} from 'vue';
 import {it, expect} from 'vitest';
-import {render} from '@testing-library/vue';
+import {render} from '@testing-library/vue/src/index';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
