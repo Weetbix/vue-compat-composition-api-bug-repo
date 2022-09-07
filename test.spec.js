@@ -1,6 +1,6 @@
 
 
-import {ref, onMounted, defineComponent} from 'vue';
+import {ref, onMounted, defineComponent, configureCompat} from 'vue';
 import {it, expect} from 'vitest';
 import {render} from '@testing-library/vue';
 
@@ -33,6 +33,13 @@ const TestAsync = defineComponent({
         };
     },
 });
+
+// Ensure we are using the compat build
+if(process.env.COMPAT_MODE) {
+    it('should be compat mode', () => {
+        expect(configureCompat).toBeDefined();
+    })
+}
 
 it('should show onMount text', async () => {
     const {findByText} = render(TestAsync);

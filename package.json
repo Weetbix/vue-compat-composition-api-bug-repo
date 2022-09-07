@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:vue3": "vitest run",
-    "test:vue-compat": "vitest run --config vite.config.compat.js"
+    "test:vue-compat": "COMPAT_MODE=true vitest run --config vite.config.compat.js"
   },
   "repository": {
     "type": "git",
