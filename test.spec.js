@@ -1,35 +1,33 @@
 
 
-import {ref, onMounted, defineComponent, configureCompat} from 'vue';
-import {it, expect} from 'vitest';
+import {onMounted, defineComponent, configureCompat} from 'vue';
 import {render} from '@testing-library/vue/src/index';
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+import { defineStore } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
-const TestAsync = defineComponent({
-    template: '<div><div>{{ mountText }}</div><div>{{ asyncText }}</div></div>',
-
-    props: {
-        done: Function,
+export const useTestStore = defineStore('testStore', {
+    state: () => {
+        return { text: null }
     },
-    setup({ done }) {
-        const mountText = ref();
-        const asyncText = ref();
+    actions: {
+        setText() {
+            this.text = 'test-text';
+        },
+    },
+});
+
+const TestComponent = defineComponent({
+    template: '<div>{{ testStore.text }}</div>',
+    setup() {
+        const testStore = useTestStore();
 
         onMounted(() => {
-            mountText.value = 'mounted';
-        });
-
-        sleep(0).then(() => {
-            asyncText.value = 'async';
-            done?.();
+            testStore.setText()
         });
 
         return {
-            mountText,
-            asyncText,
+            testStore,
         };
     },
 });
@@ -42,6 +40,10 @@ if(process.env.COMPAT_MODE) {
 }
 
 it('should show onMount text', async () => {
-    const {findByText} = render(TestAsync);
-    await findByText('mounted');
+    const {findByText} = render(TestComponent, {
+        global: {
+            plugins: [createTestingPinia({ stubActions: false })],
+        },
+    });
+    await findByText('test-text', {exact: false});
 });

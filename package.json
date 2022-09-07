@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/Weetbix/vue-compat-composition-api-bug-repo#readme",
   "dependencies": {
-    "@vue/compat": "^3.2.37",
+    "@pinia/testing": "^0.0.14",
+    "@vue/compat": "^3.2.38",
     "@vue/test-utils": "^2.0.2",
-    "vitest": "^0.22.1",
-    "vue": "^3.2.37"
+    "pinia": "^2.0.22",
+    "vitest": "^0.23.1",
+    "vue": "^3.2.38"
   },
   "devDependencies": {
     "@testing-library/vue": "https://github.com/testing-library/vue-testing-library",
