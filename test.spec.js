@@ -2,7 +2,7 @@
 
 import {ref, onMounted, defineComponent} from 'vue';
 import {it, expect} from 'vitest';
-import {mount, flushPromises} from '@vue/test-utils';
+import {render} from '@testing-library/vue';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -34,53 +34,7 @@ const TestAsync = defineComponent({
     },
 });
 
-it('should show onMount text', () => new Promise(done => {
-    const wrapper = mount(TestAsync);
-    wrapper.vm.$nextTick(() => {
-        expect(wrapper.html()).toMatch('mounted')
-        done();
-    });
-}));
-
-it('should show async text', async () => {
-    let renderedAsyncResolve;
-    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
-
-    const wrapper = mount(TestAsync, {
-        propsData: { done: renderedAsyncResolve }
-    });
-
-    await renderedAsync;
-    expect(wrapper.html()).toMatch('async');
+it('should show onMount text', async () => {
+    const {findByText} = render(TestAsync);
+    await findByText('mounted');
 });
-
-it('should show async text with nextTick', () => new Promise(async (done) => {
-    let renderedAsyncResolve;
-    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
-
-    const wrapper = mount(TestAsync, {
-        propsData: { done: renderedAsyncResolve }
-    });
-
-    await renderedAsync;
-    wrapper.vm.$nextTick(() => {
-        expect(wrapper.html()).toMatch('async');
-        done();
-    });
-}));
-
-it('with flushPromises', () => new Promise(async (done) => {
-    let renderedAsyncResolve;
-    const renderedAsync = new Promise(resolve => renderedAsyncResolve = resolve);
-
-    const wrapper = mount(TestAsync, {
-        propsData: { done: renderedAsyncResolve }
-    });
-
-    await renderedAsync;
-    await flushPromises();
-    wrapper.vm.$nextTick(() => {
-        expect(wrapper.html()).toMatch('async');
-        done();
-    });
-}));
