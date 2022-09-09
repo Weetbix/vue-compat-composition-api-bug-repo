@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:vue3": "vitest run",
-    "test:vue-compat": "COMPAT_MODE=true vitest run --config vite.config.compat.js"
+    "test": "vitest run",
   },
   "repository": {
     "type": "git",
@@ -18,13 +17,10 @@
   },
   "homepage": "https://github.com/Weetbix/vue-compat-composition-api-bug-repo#readme",
   "dependencies": {
-    "@pinia/testing": "^0.0.14",
-    "@testing-library/vue": "^6.6.1",
-    "@vue/compat": "^3.2.38",
-    "@vue/test-utils": "^2.0.2",
-    "pinia": "^2.0.22",
+    "vue-template-compiler": "^2.6.14",
+    "@vue/test-utils": "^1.1.0",
     "vitest": "^0.23.1",
-    "vue": "^3.2.38"
+    "vue": "^2.6.14"
   },
   "devDependencies": {
     "jsdom": "^20.0.0"
