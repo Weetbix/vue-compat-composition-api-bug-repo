@@ -7,7 +7,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@testing-library/vue': '@testing-library/vue/src/index',
+      // '@testing-library/vue': '@testing-library/vue/src/index',
     }
   },
 })
