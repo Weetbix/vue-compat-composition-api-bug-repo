@@ -5,14 +5,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     deps: {
-      inline: [
-        '@vue/test-utils',
-      ]
-    }
+      inline: true,
+    },
   },
   resolve: {
     alias: {
-      vue: '@vue/compat',
+      vue: '@vue/compat/dist/vue.esm-bundler.js',
+      '@testing-library/vue': '@testing-library/vue/src/index',
     }
   },
 })

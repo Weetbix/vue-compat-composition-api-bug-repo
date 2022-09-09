@@ -1,49 +1,51 @@
-
-
-import {onMounted, defineComponent, configureCompat} from 'vue';
-import {render} from '@testing-library/vue/src/index';
-
-import { defineStore } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
-
-export const useTestStore = defineStore('testStore', {
-    state: () => {
-        return { text: null }
-    },
-    actions: {
-        setText() {
-            this.text = 'test-text';
-        },
-    },
-});
+import { defineComponent } from 'vue';
+import {fireEvent, render} from '@testing-library/vue';
 
 const TestComponent = defineComponent({
-    template: '<div>{{ testStore.text }}</div>',
-    setup() {
-        const testStore = useTestStore();
-
-        onMounted(() => {
-            testStore.setText()
-        });
-
+    name: 'test',
+    template: '<div>{{ text }}<button @click="onclick">clickme</button></div>',
+    data() {
         return {
-            testStore,
+            text: '',
         };
+    },
+    methods: {
+        async onclick() {
+            this.text = 'set';
+        },
     },
 });
 
-// Ensure we are using the compat build
-if(process.env.COMPAT_MODE) {
-    it('should be compat mode', () => {
-        expect(configureCompat).toBeDefined();
-    })
-}
+const stubDate = (isoDateString) => {
+    class MockDate extends Date {
+        static now() {
+            return new Date(isoDateString).valueOf();
+        }
+    }
+    vi.stubGlobal('Date', MockDate);
+};
 
-it('should show onMount text', async () => {
-    const {findByText} = render(TestComponent, {
-        global: {
-            plugins: [createTestingPinia({ stubActions: false })],
-        },
-    });
-    await findByText('test-text', {exact: false});
+const fakeTimers = (date) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(date);
+};
+
+it('should show text on click', async () => {
+    const {findByRole, findByText} = render(TestComponent);
+    await fireEvent.click(await findByRole('button', {name: 'clickme'}));
+    await findByText('set');
+});
+
+it('should show text when time mocked directly', async () => {
+    stubDate('2022-01-11T00:00:00Z');
+    const {findByRole, findByText} = render(TestComponent);
+    await fireEvent.click(await findByRole('button', {name: 'clickme'}));
+    await findByText('set');
+});
+
+it('should show text when time mocked with fake timers', async () => {
+    fakeTimers('2022-01-11T00:00:00Z');
+    const {findByRole, findByText} = render(TestComponent);
+    await fireEvent.click(await findByRole('button', {name: 'clickme'}));
+    await findByText('set');
 });
