@@ -1,6 +1,6 @@
 import { defineComponent } from 'vue';
-import {fireEvent, render} from '@testing-library/vue';
-import { afterEach, beforeEach, describe, vi } from 'vitest';
+import {fireEvent, mount} from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 
 const TestComponent = defineComponent({
     name: 'test',
@@ -32,9 +32,10 @@ const fakeTimers = (date) => {
 };
 
 it('should show text on click', async () => {
-    const {findByRole, findByText} = render(TestComponent);
-    await fireEvent.click(await findByRole('button', {name: 'clickme'}));
-    await findByText('set');
+    const wrapper = mount(TestComponent);
+    await wrapper.find('button').trigger('click');
+
+    expect(wrapper.text()).toContain('set');
 });
 
 describe('', () => {
@@ -47,9 +48,9 @@ describe('', () => {
     });
 
     it('should show text when time mocked directly', async () => {
-        const {findByRole, findByText} = render(TestComponent);
-        await fireEvent.click(await findByRole('button', {name: 'clickme'}));
-        await findByText('set');
+        const wrapper = mount(TestComponent);
+        await wrapper.find('button').trigger('click');
+        expect(wrapper.text()).toContain('set');
     });
 })
 
@@ -63,8 +64,8 @@ describe('', () => {
     });
 
     it('should show text when time mocked with fake timers', async () => {
-        const {findByRole, findByText} = render(TestComponent);
-        await fireEvent.click(await findByRole('button', {name: 'clickme'}));
-        await findByText('set');
+        const wrapper = mount(TestComponent);
+        await wrapper.find('button').trigger('click');
+        expect(wrapper.text()).toContain('set');
     });
 });
