@@ -5,9 +5,4 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
-  resolve: {
-    alias: {
-      // '@testing-library/vue': '@testing-library/vue/src/index',
-    }
-  },
 })

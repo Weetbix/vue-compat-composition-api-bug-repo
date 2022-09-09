@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import {fireEvent, mount} from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 
 const TestComponent = defineComponent({
